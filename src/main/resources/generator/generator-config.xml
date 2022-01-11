@@ -12,7 +12,7 @@
         <property name="endingDelimiter" value="`"/>
 
         <!--覆盖生成XML文件-->
-        <plugin type="org.mybatis.generator.plugins.UnmergeableXmlMappersPlugin" />
+        <plugin type="org.mybatis.generator.plugins.UnmergeableXmlMappersPlugin"/>
         <!-- 生成的实体类添加toString()方法 -->
         <plugin type="org.mybatis.generator.plugins.ToStringPlugin"/>
 
@@ -25,6 +25,8 @@
                         connectionURL="jdbc:mysql://blog.stelpolvo.com:3306/wiki?serverTimezone=Asia/Shanghai"
                         userId="root"
                         password="inmydocker">
+            <!-- FIX:解决生成其他数据库同名表问题 -->
+            <property name="nullCatalogMeansCurrent" value="true"/>
         </jdbcConnection>
 
         <!-- domain类的位置 -->
