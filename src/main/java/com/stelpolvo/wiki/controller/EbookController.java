@@ -1,6 +1,6 @@
 package com.stelpolvo.wiki.controller;
 
-import com.stelpolvo.wiki.domain.EbookExample;
+import com.stelpolvo.wiki.domain.vo.EbookVo;
 import com.stelpolvo.wiki.domain.Resp;
 import com.stelpolvo.wiki.service.EbookService;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,4 +18,9 @@ public class EbookController {
      为了规范化代码之后我都会使用@Resource来注入变量 */
     @Resource
     private EbookService ebookService;
+
+    @GetMapping("/list")
+    public Resp list(EbookVo ebookVo){
+        return Resp.ok(ebookService.list(ebookVo));
+    }
 }
