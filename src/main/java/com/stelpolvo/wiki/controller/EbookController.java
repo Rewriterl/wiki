@@ -5,6 +5,7 @@ import com.stelpolvo.wiki.domain.Ebook;
 import com.stelpolvo.wiki.domain.vo.EbookVo;
 import com.stelpolvo.wiki.domain.Resp;
 import com.stelpolvo.wiki.service.EbookService;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -27,7 +28,10 @@ public class EbookController {
 
     @PostMapping("/save")
     public Resp save(@RequestBody Ebook ebook) {
-        return ebookService.save(ebook) > 0 ? Resp.ok("修改成功") : Resp.error("修改失败");
+        if (ObjectUtils.isEmpty(ebook.getName())) {
+            return Resp.error("书名不能为空");
+        }
+        return ebookService.save(ebook) > 0 ? Resp.ok("保存成功") : Resp.error("保存失败");
     }
 
     @DeleteMapping("/delete/{id}")
