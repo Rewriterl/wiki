@@ -4,6 +4,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.stelpolvo.wiki.domain.Ebook;
 import com.stelpolvo.wiki.domain.EbookExample;
+import com.stelpolvo.wiki.domain.Resp;
 import com.stelpolvo.wiki.domain.RespPage;
 import com.stelpolvo.wiki.domain.vo.EbookVo;
 import com.stelpolvo.wiki.mapper.EbookMapper;
@@ -47,5 +48,9 @@ public class EbookService {
             return ebookMapper.insert(ebook);
         }
         return ebookMapper.updateByPrimaryKey(ebook);
+    }
+
+    public int delete(Long id) {
+        return ebookMapper.deleteByPrimaryKey(id);
     }
 }

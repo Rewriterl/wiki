@@ -29,4 +29,9 @@ public class EbookController {
     public Resp save(@RequestBody Ebook ebook) {
         return ebookService.save(ebook) > 0 ? Resp.ok("修改成功") : Resp.error("修改失败");
     }
+
+    @DeleteMapping("/delete/{id}")
+    public Resp delete(@PathVariable Long id) {
+        return ebookService.delete(id) > 0 ? Resp.ok("删除成功") : Resp.error("删除失败");
+    }
 }
