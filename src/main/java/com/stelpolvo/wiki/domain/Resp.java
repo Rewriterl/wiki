@@ -5,6 +5,7 @@ public class Resp {
     private final String message;
     private final Object data;
 
+
     public Resp(Integer code, String message, Object data) {
         this.code = code;
         this.message = message;

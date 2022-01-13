@@ -1,6 +1,6 @@
 package com.stelpolvo.wiki.domain.vo;
 
-public class EbookVo {
+public class EbookVo extends BaseVo{
     private Long id;
     private String name;
 
@@ -18,5 +18,13 @@ public class EbookVo {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    @Override
+    public String toString() {
+        return "EbookVo{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                '}';
     }
 }

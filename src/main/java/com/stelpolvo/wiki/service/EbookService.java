@@ -1,7 +1,10 @@
 package com.stelpolvo.wiki.service;
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.stelpolvo.wiki.domain.Ebook;
 import com.stelpolvo.wiki.domain.EbookExample;
+import com.stelpolvo.wiki.domain.RespPage;
 import com.stelpolvo.wiki.domain.vo.EbookVo;
 import com.stelpolvo.wiki.mapper.EbookMapper;
 import org.slf4j.Logger;
@@ -18,16 +21,19 @@ public class EbookService {
     @Resource
     private EbookMapper ebookMapper;
 
-    public Ebook getEbookByid(Long id) {
+    public Ebook getEbookById(Long id) {
         return ebookMapper.selectByPrimaryKey(id);
     }
 
-    public List<Ebook> list(EbookVo ebookVo) {
+    public RespPage<Ebook> list(EbookVo ebookVo) {
         EbookExample ebookExample = new EbookExample();
         EbookExample.Criteria criteria = ebookExample.createCriteria();
+        PageHelper.startPage(ebookVo.getPage(), ebookVo.getSize());
         if (!ObjectUtils.isEmpty(ebookVo.getName())) {
             criteria.andNameLike("%" + ebookVo.getName() + "%");
         }
-        return ebookMapper.selectByExample(ebookExample);
+        List<Ebook> ebookList = ebookMapper.selectByExample(ebookExample);
+        PageInfo<Ebook> ebookPageInfo = new PageInfo<>(ebookList);
+        return new RespPage<>(ebookPageInfo.getTotal(),ebookList);
     }
 }
