@@ -97,7 +97,6 @@ public class LogAspect {
      */
     @AfterThrowing(pointcut = "logPointcut()", throwing = "e")
     public void logAfterThrowing(JoinPoint joinPoint, Throwable e) {
-        LOG.info("------------- 发生异常 -------------", ThrowableUtil.getStackTrace(e).getBytes(StandardCharsets.UTF_8));
         LOG.info("------------- 结束 耗时：{} ms -------------", System.currentTimeMillis() - currentTime.get());
         currentTime.remove();
     }

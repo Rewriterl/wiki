@@ -21,11 +21,11 @@ public class Resp {
     }
 
     public static Resp error(Object data) {
-        return new Resp(200, "请求失败", data);
+        return new Resp(500, "请求失败", data);
     }
 
     public static Resp error(String message, Object data) {
-        return new Resp(200, message, data);
+        return new Resp(500, message, data);
     }
 
     public Integer getCode() {
