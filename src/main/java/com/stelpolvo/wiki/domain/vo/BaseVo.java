@@ -4,6 +4,11 @@ public class BaseVo {
     private int page;
     private int size;
 
+    public BaseVo() {
+        this.page = 1;
+        this.size = 7;
+    }
+
     public int getTotal() {
         return total;
     }
@@ -28,6 +33,11 @@ public class BaseVo {
 
     public void setSize(int size) {
         this.size = size;
+    }
+
+    public void setDefault() {
+        this.page = 1;
+        this.size = 7;
     }
 
     @Override
