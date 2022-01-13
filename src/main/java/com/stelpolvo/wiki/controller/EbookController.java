@@ -1,12 +1,11 @@
 package com.stelpolvo.wiki.controller;
 
 import com.stelpolvo.wiki.annotation.Log;
+import com.stelpolvo.wiki.domain.Ebook;
 import com.stelpolvo.wiki.domain.vo.EbookVo;
 import com.stelpolvo.wiki.domain.Resp;
 import com.stelpolvo.wiki.service.EbookService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 
@@ -24,5 +23,10 @@ public class EbookController {
     @Log("条件查询电子书列表")
     public Resp list(EbookVo ebookVo) {
         return Resp.ok(ebookService.list(ebookVo));
+    }
+
+    @PostMapping("/save")
+    public Resp save(@RequestBody Ebook ebook) {
+        return ebookService.save(ebook) > 0 ? Resp.ok("修改成功") : Resp.error("修改失败");
     }
 }

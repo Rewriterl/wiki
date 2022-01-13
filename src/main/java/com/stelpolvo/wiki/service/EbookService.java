@@ -7,6 +7,7 @@ import com.stelpolvo.wiki.domain.EbookExample;
 import com.stelpolvo.wiki.domain.RespPage;
 import com.stelpolvo.wiki.domain.vo.EbookVo;
 import com.stelpolvo.wiki.mapper.EbookMapper;
+import com.stelpolvo.wiki.utils.SnowFlake;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -21,6 +22,9 @@ public class EbookService {
     @Resource
     private EbookMapper ebookMapper;
 
+    @Resource
+    private SnowFlake snowFlake;
+
     public Ebook getEbookById(Long id) {
         return ebookMapper.selectByPrimaryKey(id);
     }
@@ -34,6 +38,14 @@ public class EbookService {
         }
         List<Ebook> ebookList = ebookMapper.selectByExample(ebookExample);
         PageInfo<Ebook> ebookPageInfo = new PageInfo<>(ebookList);
-        return new RespPage<>(ebookPageInfo.getTotal(),ebookList);
+        return new RespPage<>(ebookPageInfo.getTotal(), ebookList);
+    }
+
+    public int save(Ebook ebook) {
+        if (ObjectUtils.isEmpty(ebook.getId())) {
+            ebook.setId(snowFlake.nextId());
+            return ebookMapper.insert(ebook);
+        }
+        return ebookMapper.updateByPrimaryKey(ebook);
     }
 }
