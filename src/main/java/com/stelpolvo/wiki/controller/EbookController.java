@@ -1,5 +1,6 @@
 package com.stelpolvo.wiki.controller;
 
+import com.stelpolvo.wiki.annotation.Log;
 import com.stelpolvo.wiki.domain.vo.EbookVo;
 import com.stelpolvo.wiki.domain.Resp;
 import com.stelpolvo.wiki.service.EbookService;
@@ -20,7 +21,8 @@ public class EbookController {
     private EbookService ebookService;
 
     @GetMapping("/list")
-    public Resp list(EbookVo ebookVo){
+    @Log("条件查询电子书列表")
+    public Resp list(EbookVo ebookVo) {
         return Resp.ok(ebookService.list(ebookVo));
     }
 }
