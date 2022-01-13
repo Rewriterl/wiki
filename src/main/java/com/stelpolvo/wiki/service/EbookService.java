@@ -25,10 +25,6 @@ public class EbookService {
     @Resource
     private SnowFlake snowFlake;
 
-    public Ebook getEbookById(Long id) {
-        return ebookMapper.selectByPrimaryKey(id);
-    }
-
     public RespPage<Ebook> list(EbookVo ebookVo) {
         EbookExample ebookExample = new EbookExample();
         EbookExample.Criteria criteria = ebookExample.createCriteria();

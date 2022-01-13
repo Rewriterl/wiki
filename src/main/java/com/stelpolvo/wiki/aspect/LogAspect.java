@@ -3,7 +3,6 @@ package com.stelpolvo.wiki.aspect;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.support.spring.PropertyPreFilters;
 import com.stelpolvo.wiki.utils.RequestContext;
-import com.stelpolvo.wiki.utils.ThrowableUtil;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.Signature;
