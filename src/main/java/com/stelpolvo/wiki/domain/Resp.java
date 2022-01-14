@@ -16,12 +16,20 @@ public class Resp {
         return new Resp(200, "请求成功", data);
     }
 
+    public static Resp ok(String message) {
+        return new Resp(200, message, null);
+    }
+
     public static Resp ok(String message, Object data) {
         return new Resp(200, message, data);
     }
 
     public static Resp error(Object data) {
         return new Resp(500, "请求失败", data);
+    }
+
+    public static Resp error(String message) {
+        return new Resp(500, message, null);
     }
 
     public static Resp error(String message, Object data) {
