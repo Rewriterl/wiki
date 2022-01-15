@@ -23,6 +23,12 @@ public class DocController {
         return Resp.ok(docService.list(docVo));
     }
 
+    @GetMapping("/all/{ebookId}")
+    @Log("根据电子书id查询")
+    public Resp all(@PathVariable Long ebookId) {
+        return Resp.ok(docService.all(ebookId));
+    }
+
     @PostMapping("/save")
     @Log("修改或保存文档信息")
     public Resp save(@RequestBody DocVo docVo) {
@@ -45,6 +51,6 @@ public class DocController {
     @GetMapping("/find-content/{id}")
     @Log("根据文章id查询文档内容")
     public Resp getContent(@PathVariable Long id) {
-        return Resp.ok(docService.findContent(id));
+        return Resp.ok("查询成功", docService.findContent(id));
     }
 }

@@ -72,6 +72,7 @@ public class DocService {
     }
 
     public String findContent(Long id) {
-        return contentMapper.selectByPrimaryKey(id).getContent();
+        Content content = contentMapper.selectByPrimaryKey(id);
+        return ObjectUtils.isEmpty(content) ? "" : content.getContent();
     }
 }
