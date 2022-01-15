@@ -7,6 +7,7 @@ import com.stelpolvo.wiki.domain.Doc;
 import com.stelpolvo.wiki.domain.DocExample;
 import com.stelpolvo.wiki.domain.RespPage;
 import com.stelpolvo.wiki.domain.vo.BaseVo;
+import com.stelpolvo.wiki.domain.vo.DocVo;
 import com.stelpolvo.wiki.mapper.ContentMapper;
 import com.stelpolvo.wiki.mapper.DocMapper;
 import com.stelpolvo.wiki.utils.SnowFlake;
@@ -22,7 +23,6 @@ public class DocService {
     private DocMapper docMapper;
 
     @Resource
-
     private ContentMapper contentMapper;
 
     @Resource
@@ -44,12 +44,20 @@ public class DocService {
         return new RespPage<>(docPageInfo.getTotal(), docList);
     }
 
-    public int save(Doc doc) {
+    public int save(DocVo docVo) {
+        Doc doc = new Doc(docVo.getId(), docVo.getEbookId(), docVo.getParent(),
+                docVo.getName(), docVo.getSort(), docVo.getViewCount(), docVo.getVoteCount());
         if (ObjectUtils.isEmpty(doc.getId())) {
             doc.setId(snowFlake.nextId());
-            return docMapper.insert(doc);
+            Content content = new Content(doc.getId(), docVo.getContent());
+            return docMapper.insert(doc) & contentMapper.insert(content);
         }
-        return docMapper.updateByPrimaryKey(doc);
+        Content record = new Content(doc.getId(), docVo.getContent());
+        int i = contentMapper.updateByPrimaryKeyWithBLOBs(record);
+        if (i == 0) {
+            i = contentMapper.insert(record);
+        }
+        return docMapper.updateByPrimaryKey(doc) & i;
     }
 
     public int delete(Long id) {
