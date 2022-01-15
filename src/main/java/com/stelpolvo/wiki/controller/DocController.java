@@ -1,7 +1,6 @@
 package com.stelpolvo.wiki.controller;
 
 import com.stelpolvo.wiki.annotation.Log;
-import com.stelpolvo.wiki.domain.Doc;
 import com.stelpolvo.wiki.domain.Resp;
 import com.stelpolvo.wiki.domain.vo.BaseVo;
 import com.stelpolvo.wiki.domain.vo.DocVo;
@@ -41,5 +40,11 @@ public class DocController {
     public Resp delete(@PathVariable String ids) {
         int delete = docService.delete(Arrays.asList(ids.split(",")));
         return delete > 0 ? Resp.ok("批量删除成功") : Resp.error("批量删除失败");
+    }
+
+    @GetMapping("/find-content/{id}")
+    @Log("根据文章id查询文档内容")
+    public Resp getContent(@PathVariable Long id) {
+        return Resp.ok(docService.findContent(id));
     }
 }

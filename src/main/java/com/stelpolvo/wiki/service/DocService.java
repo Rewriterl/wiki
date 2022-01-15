@@ -71,4 +71,7 @@ public class DocService {
         return docMapper.deleteByExample(docExample);
     }
 
+    public String findContent(Long id) {
+        return contentMapper.selectByPrimaryKey(id).getContent();
+    }
 }
