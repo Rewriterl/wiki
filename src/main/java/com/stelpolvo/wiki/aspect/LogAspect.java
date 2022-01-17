@@ -2,6 +2,7 @@ package com.stelpolvo.wiki.aspect;
 
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.support.spring.PropertyPreFilters;
+import com.stelpolvo.wiki.annotation.Log;
 import com.stelpolvo.wiki.utils.RequestContext;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -10,6 +11,7 @@ import org.aspectj.lang.annotation.AfterThrowing;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
+import org.aspectj.lang.reflect.MethodSignature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -47,6 +49,8 @@ public class LogAspect {
     public Object logAround(ProceedingJoinPoint joinPoint) throws Throwable {
         Object result;
         currentTime.set(System.currentTimeMillis());
+        MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
+        Log annotation = methodSignature.getMethod().getAnnotation(Log.class);
         result = joinPoint.proceed();
         // 开始打印请求日志
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
@@ -54,19 +58,18 @@ public class LogAspect {
         HttpServletRequest request = attributes.getRequest();
         Signature signature = joinPoint.getSignature();
         String name = signature.getName();
+        RequestContext.setRemoteAddr(getRemoteIp(request));
 
         // 打印请求信息
-        LOG.info("------------- 开始 -------------");
+        LOG.info("------------- 请求开始 -------------");
+        LOG.info("用户操作: {}", annotation.value());
         LOG.info("请求地址: {} {}", request.getRequestURL().toString(), request.getMethod());
         LOG.info("类名方法: {}.{}", signature.getDeclaringTypeName(), name);
-        LOG.info("远程地址: {}", request.getRemoteAddr());
+        LOG.info("远程地址: {}", RequestContext.getRemoteAddr());
 
-        RequestContext.setRemoteAddr(getRemoteIp(request));
 
         // 打印请求参数
         Object[] args = joinPoint.getArgs();
-        // LOG.info("请求参数: {}", JSONObject.toJSONString(args));
-
         Object[] arguments  = new Object[args.length];
         for (int i = 0; i < args.length; i++) {
             if (args[i] instanceof ServletRequest
@@ -83,7 +86,7 @@ public class LogAspect {
         excludefilter.addExcludes(excludeProperties);
         LOG.info("请求参数: {}", JSONObject.toJSONString(arguments, excludefilter));
         LOG.info("返回结果: {}", JSONObject.toJSONString(result, excludefilter));
-        LOG.info("------------- 结束 耗时：{} ms -------------", System.currentTimeMillis() - currentTime.get());
+        LOG.info("------------- 请求结束 耗时：{} ms -------------", System.currentTimeMillis() - currentTime.get());
         currentTime.remove();
         return result;
     }
