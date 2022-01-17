@@ -68,12 +68,30 @@
   <sql id="Base_Column_List">
     id, login_name, `name`, `password`
   </sql>
+
+  <sql id="Base_Column_List_NP">
+    id, login_name, `name`
+  </sql>
   <select id="selectByExample" parameterType="com.stelpolvo.wiki.domain.UserExample" resultMap="BaseResultMap">
     select
     <if test="distinct">
       distinct
     </if>
     <include refid="Base_Column_List" />
+    from user
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByExampleNP" parameterType="com.stelpolvo.wiki.domain.UserExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List_NP" />
     from user
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />

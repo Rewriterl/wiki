@@ -1,5 +1,7 @@
 package com.stelpolvo.wiki.domain;
 
+import org.springframework.util.ObjectUtils;
+
 public class User {
     private Long id;
 
@@ -8,6 +10,26 @@ public class User {
     private String name;
 
     private String password;
+
+    public boolean isValided(){
+        return this.password.matches("^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{8,16}$");
+    }
+
+    public boolean isValided(String password){
+        return password.matches("^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{8,16}$");
+    }
+
+    public boolean isNotNull() {
+        return !ObjectUtils.isEmpty(this.loginName) && !ObjectUtils.isEmpty(this.name) && !ObjectUtils.isEmpty(this.password);
+    }
+
+    public User(Long id, String password) {
+        this.id = id;
+        this.password = password;
+    }
+
+    public User() {
+    }
 
     public Long getId() {
         return id;

@@ -5,8 +5,6 @@ import com.stelpolvo.wiki.domain.Resp;
 import com.stelpolvo.wiki.utils.ThrowableUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -25,7 +23,10 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Throwable.class)
     public Resp handleException(Throwable e) {
         // 打印堆栈信息
-        LOG.info("------------- 发生异常: {} -------------", ThrowableUtil.getStackTrace(e));
+        LOG.info("------------- 未知异常: {} -------------", ThrowableUtil.getStackTrace(e));
+        if (e.getMessage() == null) {
+            return buildResponseEntity("请联系管理员解决问题");
+        }
         return buildResponseEntity(e.getMessage());
     }
 
@@ -35,7 +36,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public Resp handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
         // 打印堆栈信息
-        LOG.info("------------- 发生异常 -------------", ThrowableUtil.getStackTrace(e).getBytes(StandardCharsets.UTF_8));
+        LOG.info("------------- 接口数据异常 -------------", ThrowableUtil.getStackTrace(e).getBytes(StandardCharsets.UTF_8));
         String[] str = Objects.requireNonNull(e.getBindingResult().getAllErrors().get(0).getCodes())[1].split("\\.");
         String message = e.getBindingResult().getAllErrors().get(0).getDefaultMessage();
         String msg = "不能为空";
@@ -43,6 +44,13 @@ public class GlobalExceptionHandler {
             message = str[1] + ":" + message;
         }
         return buildResponseEntity(message);
+    }
+
+    @ExceptionHandler(UserException.class)
+    public Resp handleLoginException(UserException e) {
+        // 打印堆栈信息
+        LOG.info("------------- 用户管理异常 -------------", ThrowableUtil.getStackTrace(e).getBytes(StandardCharsets.UTF_8));
+        return buildResponseEntity(e.getMessage());
     }
 
     /**

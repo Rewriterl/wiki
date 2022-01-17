@@ -105,6 +105,10 @@ public class LogAspect {
 
     /**
      * 使用nginx做反向代理，需要用该方法才能取到真实的远程IP
+     * proxy_set_header Host $http_host;
+     * proxy_set_header X-Real-IP $remote_addr;
+     * proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+     * proxy_set_header X-Forwarded-Proto $scheme;
      * @param request
      * @return
      */
