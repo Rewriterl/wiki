@@ -8,8 +8,11 @@ import com.stelpolvo.wiki.domain.DocExample;
 import com.stelpolvo.wiki.domain.RespPage;
 import com.stelpolvo.wiki.domain.vo.BaseVo;
 import com.stelpolvo.wiki.domain.vo.DocVo;
+import com.stelpolvo.wiki.exception.UserException;
 import com.stelpolvo.wiki.mapper.ContentMapper;
 import com.stelpolvo.wiki.mapper.DocMapper;
+import com.stelpolvo.wiki.utils.RedisUtil;
+import com.stelpolvo.wiki.utils.RequestContext;
 import com.stelpolvo.wiki.utils.SnowFlake;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,6 +31,9 @@ public class DocService {
 
     @Resource
     private SnowFlake snowFlake;
+
+    @Resource
+    private RedisUtil redisUtil;
 
     public List<Doc> all(Long ebookId) {
         DocExample docExample = new DocExample();
@@ -84,6 +90,12 @@ public class DocService {
     }
 
     public int updateVoteCount(Long id) {
+        String remoteAddr = RequestContext.getRemoteAddr();
+        if (redisUtil.validateRepeat("DOC_VOTE_" + id + "_" + remoteAddr, 5000)) {
+            docMapper.updateVoteCount(id);
+        } else {
+            throw new UserException("已点赞");
+        }
         return docMapper.updateVoteCount(id);
     }
 }
