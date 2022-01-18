@@ -2,7 +2,9 @@ package com.stelpolvo.wiki.mapper;
 
 import com.stelpolvo.wiki.domain.Doc;
 import com.stelpolvo.wiki.domain.DocExample;
+
 import java.util.List;
+
 import org.apache.ibatis.annotations.Param;
 
 public interface DocMapper {
@@ -27,4 +29,6 @@ public interface DocMapper {
     int updateByPrimaryKeySelective(Doc record);
 
     int updateByPrimaryKey(Doc record);
+
+    int updateViewCount(@Param("id") Long id);
 }

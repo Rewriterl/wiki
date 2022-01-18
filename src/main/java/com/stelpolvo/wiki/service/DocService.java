@@ -12,6 +12,7 @@ import com.stelpolvo.wiki.mapper.ContentMapper;
 import com.stelpolvo.wiki.mapper.DocMapper;
 import com.stelpolvo.wiki.utils.SnowFlake;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
 import javax.annotation.Resource;
@@ -44,11 +45,14 @@ public class DocService {
         return new RespPage<>(docPageInfo.getTotal(), docList);
     }
 
+    @Transactional
     public int save(DocVo docVo) {
         Doc doc = new Doc(docVo.getId(), docVo.getEbookId(), docVo.getParent(),
                 docVo.getName(), docVo.getSort(), docVo.getViewCount(), docVo.getVoteCount());
         if (ObjectUtils.isEmpty(doc.getId())) {
             doc.setId(snowFlake.nextId());
+            doc.setViewCount(0);
+            doc.setVoteCount(0);
             Content content = new Content(doc.getId(), docVo.getContent());
             return docMapper.insert(doc) & contentMapper.insert(content);
         }
@@ -73,6 +77,9 @@ public class DocService {
 
     public String findContent(Long id) {
         Content content = contentMapper.selectByPrimaryKey(id);
+        if (!ObjectUtils.isEmpty(content)){
+            docMapper.updateViewCount(id);
+        }
         return ObjectUtils.isEmpty(content) ? "" : content.getContent();
     }
 }

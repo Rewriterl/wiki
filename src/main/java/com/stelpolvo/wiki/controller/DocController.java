@@ -30,12 +30,13 @@ public class DocController {
     }
 
     @PostMapping("/save")
-    @Log("修改或保存文档信息")
+    @Log("修改或新增文档")
     public Resp save(@RequestBody DocVo docVo) {
         if (ObjectUtils.isEmpty(docVo.getEbookId()) ||
                 ObjectUtils.isEmpty(docVo.getParent()) ||
                 ObjectUtils.isEmpty(docVo.getName()) ||
-                ObjectUtils.isEmpty(docVo.getSort())) {
+                ObjectUtils.isEmpty(docVo.getSort()) ||
+                ObjectUtils.isEmpty(docVo.getContent())) {
             return Resp.error("请填写全部信息");
         }
         return docService.save(docVo) > 0 ? Resp.ok("保存成功") : Resp.error("保存失败");
