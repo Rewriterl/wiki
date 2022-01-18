@@ -54,4 +54,10 @@ public class DocController {
     public Resp getContent(@PathVariable Long id) {
         return Resp.ok("查询成功", docService.findContent(id));
     }
+
+    @GetMapping("/vote/{id}")
+    @Log("文档点赞")
+    public Resp updateVoteCount(@PathVariable Long id) {
+        return docService.updateVoteCount(id) > 0 ? Resp.ok("点赞成功") : Resp.error("点赞失败");
+    }
 }
