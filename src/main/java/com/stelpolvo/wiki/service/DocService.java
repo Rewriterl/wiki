@@ -98,4 +98,8 @@ public class DocService {
         }
         return docMapper.updateVoteCount(id);
     }
+
+    public void updateEbookInfo(){
+        docMapper.updateEbookInfo();
+    }
 }

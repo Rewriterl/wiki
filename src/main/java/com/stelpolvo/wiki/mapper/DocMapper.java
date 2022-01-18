@@ -33,4 +33,6 @@ public interface DocMapper {
     int updateViewCount(@Param("id") Long id);
 
     int updateVoteCount(@Param("id") Long id);
+
+    int updateEbookInfo();
 }
