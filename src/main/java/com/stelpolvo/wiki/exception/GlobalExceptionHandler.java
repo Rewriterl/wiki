@@ -3,6 +3,7 @@ package com.stelpolvo.wiki.exception;
 import com.stelpolvo.wiki.aspect.LogAspect;
 import com.stelpolvo.wiki.domain.Resp;
 import com.stelpolvo.wiki.utils.ThrowableUtil;
+import org.apache.catalina.connector.ClientAbortException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -44,6 +45,11 @@ public class GlobalExceptionHandler {
             message = str[1] + ":" + message;
         }
         return buildResponseEntity(message);
+    }
+
+    @ExceptionHandler(ClientAbortException.class)
+    public void handleClientAbortException(ClientAbortException e){
+        LOG.info("------------- 用户连接重置 -------------", ThrowableUtil.getStackTrace(e).getBytes(StandardCharsets.UTF_8));
     }
 
     @ExceptionHandler(UserException.class)
