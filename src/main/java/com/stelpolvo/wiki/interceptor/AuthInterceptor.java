@@ -21,7 +21,7 @@ public class AuthInterceptor implements HandlerInterceptor {
     private RedisTemplate<String, String> redisTemplate;
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         // OPTIONS请求不做校验
         if (request.getMethod().toUpperCase(Locale.ROOT).equals("OPTIONS")) {
             return true;
