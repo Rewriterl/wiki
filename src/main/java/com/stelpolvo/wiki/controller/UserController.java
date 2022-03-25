@@ -82,7 +82,6 @@ public class UserController {
         Long token = snowFlake.nextId();
         UserVo userVo = new UserVo(login.getId(), login.getLoginName(), login.getName(), token.toString());
         redisTemplate.opsForValue().set(token.toString(), JSONObject.toJSONString(userVo), 3600 * 24, TimeUnit.SECONDS);
-
         return Resp.ok("登录成功", userVo);
     }
 

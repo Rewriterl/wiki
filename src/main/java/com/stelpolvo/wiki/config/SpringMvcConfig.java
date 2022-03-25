@@ -16,6 +16,7 @@ public class SpringMvcConfig implements WebMvcConfigurer {
         registry.addInterceptor(authInterceptor)
                 .addPathPatterns("/**")
                 .excludePathPatterns(
+                        "/favicon.ico",
                         "/test/**",
                         "/redis/**",
                         "/user/login",

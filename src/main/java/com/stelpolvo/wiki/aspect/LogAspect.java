@@ -5,6 +5,7 @@ import com.alibaba.fastjson.support.spring.PropertyPreFilters;
 import com.stelpolvo.wiki.annotation.Log;
 import com.stelpolvo.wiki.utils.RequestContext;
 import com.stelpolvo.wiki.utils.SnowFlake;
+import org.apache.ibatis.binding.MapperMethod;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.Signature;
@@ -55,11 +56,10 @@ public class LogAspect {
     public Object logAround(ProceedingJoinPoint joinPoint) throws Throwable {
         // 增加日志流水号
         MDC.put("LOG_ID", String.valueOf(snowFlake.nextId()));
-        Object result;
+        Object result = null;
         currentTime.set(System.currentTimeMillis());
         MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
         Log annotation = methodSignature.getMethod().getAnnotation(Log.class);
-        result = joinPoint.proceed();
         // 开始打印请求日志
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         assert attributes != null;
@@ -67,18 +67,13 @@ public class LogAspect {
         Signature signature = joinPoint.getSignature();
         String name = signature.getName();
         RequestContext.setRemoteAddr(getRemoteIp(request));
-
         // 打印请求信息
         LOG.info("------------- 请求开始 -------------");
-        LOG.info("用户操作: {}", annotation.value());
-        LOG.info("请求地址: {} {}", request.getRequestURL().toString(), request.getMethod());
-        LOG.info("类名方法: {}.{}", signature.getDeclaringTypeName(), name);
-        LOG.info("远程地址: {}", RequestContext.getRemoteAddr());
 
 
         // 打印请求参数
         Object[] args = joinPoint.getArgs();
-        Object[] arguments  = new Object[args.length];
+        Object[] arguments = new Object[args.length];
         for (int i = 0; i < args.length; i++) {
             if (args[i] instanceof ServletRequest
                     || args[i] instanceof ServletResponse
@@ -87,14 +82,23 @@ public class LogAspect {
             }
             arguments[i] = args[i];
         }
-        // 排除字段，敏感字段或太长的字段不显示
-        String[] excludeProperties = {"password", "file"};
+        /*
+         * 排除字段，敏感字段或太长的字段不显示
+         * 排除：returnType:write javaBean error, fastjson version 1.2.76、file
+         * 敏感字段: password
+         */
+        String[] excludeProperties = {"password", "file", "returnType"};
         PropertyPreFilters filters = new PropertyPreFilters();
         PropertyPreFilters.MySimplePropertyPreFilter excludefilter = filters.addFilter();
         excludefilter.addExcludes(excludeProperties);
-        LOG.info("请求参数: {}", JSONObject.toJSONString(arguments, excludefilter));
-        LOG.info("返回结果: {}", JSONObject.toJSONString(result, excludefilter));
-        LOG.info("------------- 请求结束 耗时：{} ms -------------", System.currentTimeMillis() - currentTime.get());
+        try {
+            result = joinPoint.proceed();
+        } catch (Throwable e) {
+            LOG.info("------------- 发生异常 --------------------");
+            generateLog(annotation, request, signature, arguments, excludefilter, result, e);
+            throw e;
+        }
+        generateLog(annotation, request, signature, arguments, excludefilter, result, null);
         currentTime.remove();
         return result;
     }
@@ -107,8 +111,6 @@ public class LogAspect {
      */
     @AfterThrowing(pointcut = "logPointcut()", throwing = "e")
     public void logAfterThrowing(JoinPoint joinPoint, Throwable e) {
-        LOG.info("------------- 结束 耗时：{} ms -------------", System.currentTimeMillis() - currentTime.get());
-        currentTime.remove();
     }
 
     /**
@@ -117,6 +119,7 @@ public class LogAspect {
      * proxy_set_header X-Real-IP $remote_addr;
      * proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
      * proxy_set_header X-Forwarded-Proto $scheme;
+     *
      * @param request
      * @return
      */
@@ -132,5 +135,18 @@ public class LogAspect {
             ip = request.getRemoteAddr();
         }
         return ip;
+    }
+
+    public void generateLog(Log annotation, HttpServletRequest request, Signature signature, Object[] arguments, PropertyPreFilters.MySimplePropertyPreFilter excludefilter, Object result, Throwable e) {
+        if (e != null) {
+            LOG.info("未知异常: {}", e.getMessage());
+        }
+        LOG.info("用户操作: {}", annotation.value());
+        LOG.info("请求地址: {} {}", request.getRequestURL().toString(), request.getMethod());
+        LOG.info("类名方法: {}.{}", signature.getDeclaringTypeName(), signature.getName());
+        LOG.info("远程地址: {}", RequestContext.getRemoteAddr());
+        LOG.info("请求参数: {}", JSONObject.toJSONString(arguments, excludefilter));
+        LOG.info("返回结果: {}", JSONObject.toJSONString(result, excludefilter));
+        LOG.info("------------- 请求结束 耗时：{} ms -------------", System.currentTimeMillis() - currentTime.get());
     }
 }

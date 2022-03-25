@@ -1,6 +1,7 @@
 package com.stelpolvo.wiki.interceptor;
 
 import com.alibaba.fastjson.JSON;
+import com.stelpolvo.wiki.annotation.Log;
 import com.stelpolvo.wiki.domain.vo.UserVo;
 import com.stelpolvo.wiki.exception.UserException;
 import com.stelpolvo.wiki.utils.UserContext;
@@ -21,6 +22,7 @@ public class AuthInterceptor implements HandlerInterceptor {
     private RedisTemplate<String, String> redisTemplate;
 
     @Override
+    @Log("用户认证")
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         // OPTIONS请求不做校验
         if (request.getMethod().toUpperCase(Locale.ROOT).equals("OPTIONS")) {

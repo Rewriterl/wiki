@@ -24,7 +24,6 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Throwable.class)
     public Resp handleException(Throwable e) {
         // 打印堆栈信息
-        LOG.info("------------- 未知异常: {} -------------", ThrowableUtil.getStackTrace(e));
         if (e.getMessage() == null) {
             return buildResponseEntity("请联系管理员解决问题");
         }
