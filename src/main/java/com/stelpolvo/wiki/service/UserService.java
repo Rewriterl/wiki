@@ -33,7 +33,7 @@ public class UserService {
         PageHelper.startPage(user.getPage(), user.getSize());
         List<User> userList = userMapper.selectByExampleNP(userExample);
         PageInfo<User> userPageInfo = new PageInfo<>(userList);
-        return new RespPage<>(userPageInfo.getTotal(), userList);
+        return new RespPage<>(userPageInfo.getTotal(), userPageInfo.getList());
     }
 
     public int save(User user) {

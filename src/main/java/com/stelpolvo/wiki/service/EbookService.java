@@ -28,10 +28,10 @@ public class EbookService {
     public RespPage<Ebook> list(EbookVo ebookVo) {
         EbookExample ebookExample = new EbookExample();
         EbookExample.Criteria criteria = ebookExample.createCriteria();
-        PageHelper.startPage(ebookVo.getPage(), ebookVo.getSize());
         if (!ObjectUtils.isEmpty(ebookVo.getName())) {
             criteria.andNameLike("%" + ebookVo.getName() + "%");
         }
+        PageHelper.startPage(ebookVo.getPage(), ebookVo.getSize());
         List<Ebook> ebookList = ebookMapper.selectByExample(ebookExample);
         PageInfo<Ebook> ebookPageInfo = new PageInfo<>(ebookList);
         return new RespPage<>(ebookPageInfo.getTotal(), ebookList);

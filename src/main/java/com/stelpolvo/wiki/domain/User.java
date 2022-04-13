@@ -11,12 +11,18 @@ public class User {
 
     private String password;
 
-    public boolean isValided(){
-        return this.password.matches("^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{8,16}$");
+    public boolean isValided() {
+        if (password != null && password.length() > 0) {
+            return password.matches("^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{8,16}$");
+        }
+        return false;
     }
 
-    public boolean isValided(String password){
-        return password.matches("^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{8,16}$");
+    public boolean isValided(String password) {
+        if (password != null && password.length() > 0) {
+            return password.matches("^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{8,16}$");
+        }
+        return false;
     }
 
     public boolean isNotNull() {
@@ -65,15 +71,25 @@ public class User {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(getClass().getSimpleName());
-        sb.append(" [");
-        sb.append("Hash = ").append(hashCode());
-        sb.append(", id=").append(id);
-        sb.append(", loginName=").append(loginName);
-        sb.append(", name=").append(name);
-        sb.append(", password=").append(password);
-        sb.append("]");
-        return sb.toString();
+        return "User{" +
+                "id=" + id +
+                ", loginName='" + loginName + '\'' +
+                ", name='" + name + '\'' +
+                ", password='" + password + '\'' +
+                '}';
     }
+
+//    @Override
+//    public String toString() {
+//        StringBuilder sb = new StringBuilder();
+//        sb.append(getClass().getSimpleName());
+//        sb.append(" [");
+//        sb.append("Hash = ").append(hashCode());
+//        sb.append(", id=").append(id);
+//        sb.append(", loginName=").append(loginName);
+//        sb.append(", name=").append(name);
+//        sb.append(", password=").append(password);
+//        sb.append("]");
+//        return sb.toString();
+//    }
 }

@@ -42,7 +42,8 @@ public class UserController {
         }
         if (user.isValided()){
             return userService.save(user) > 0 ? Resp.ok("操作成功") : Resp.error("操作失败");
-        }else {
+        }
+        else {
             return Resp.error("密码需包含数字与字母，最少八位最高16位");
         }
     }
@@ -65,7 +66,8 @@ public class UserController {
         if (user.isValided()){
             String password = DigestUtils.md5DigestAsHex(user.getPassword().getBytes());
             return userService.resetPassword(user.getId(), password) > 0 ? Resp.ok("修改成功") : Resp.error("修改失败");
-        }else {
+        }
+        else {
             return Resp.error("密码需包含数字与字母，最少八位最高16位");
         }
     }
