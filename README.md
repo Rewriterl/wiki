@@ -8,4 +8,3 @@
 | Mybatis          |
 | MybatisGenerator |
 | Redis            |
-| MongoDB          |
